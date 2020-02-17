@@ -1,51 +1,57 @@
-from faker import Faker
 import json
-import csv
-import pandas as pd 
-import numpy as np 
-from classes.Customer import Customer
-from classes.Producers import Producers
-
-fake = Faker('nl_NL')
-data = []
+import time
+from services.MockService import *
+import os
+ 
+dirpath = os.getcwd()
 fileName = ""
+
+
+#waiting for input
+
+print('Welcome to the Mock generator for the Energy Grid!')
+
+time.sleep(2)
+
+dataType = input('Choose your mock dataType: P = Producers / C = Customers: ')
+
+time.sleep(1)
+
+amount = input('Fill in the amount of mock data row: ')
+
+time.sleep(1)
+
+fileName = input('Choose your file name (can leave default): ')
+
+if fileName == '' and dataType == 'P':
+    fileName = "Producers.json"
+elif fileName == '' and dataType == 'C':
+    fileName = "Customers.json"
+
+time.sleep(1)
+
+directory = input('Fill in the file directory (can leave default): ')
+
+time.sleep(1)
+
+print('Great! Lets start mocking!')
+
+mockData = Generate(dataType, int(amount))
+
+print("generating done! Total of {o} objects created".format(o=len(mockData)))
+
+fullpath = ''
+
+if directory != '':
+    fullPath = directory + '/' + fileName
+else :
+    fullPath = dirpath + '/' + fileName
+
 # csvFile = open("Customers.csv", "w")
-
-
 # fieldnames = ['first_name','last_name']
 # writer = csv.DictWriter(csvFile, fieldnames=fieldnames)
 # writer.writeheader()
 
-def generateFaker(self, type=''):
-    
-    if type == 'c':
-        fileName = "Customers.json"
-        c = Customer()
-        c.id = fake.random_int(min=0, max=99999999, step=1)
-        c.name = fake.name()
-        c.adress = fake.address()
-        return c
-    elif type == 'p':
-        fileName = "Producers.json"
-        p = Producers()
-        p.id = fake.random_int(min=0, max=99999999, step=1)
-        p.name = fake.company()
-        p.adress = fake.address()
-        p.currentOutput = fake.random_int(min=0, max=9999, step=1)
-        return p
-
-
-for _ in range(1000):
-    data.append(generateFaker("p"))
-    # writer.writerow(c.__dict__)
-    
-print("generating done! Total of {o} objects created".format(o=len(data)))
-
-print(fileName)
-jsonFile = open(fileName, "w")
-jsonFile.writelines(json.dumps([c.__dict__ for c in data]))
+jsonFile = open(fullPath, "w")
+jsonFile.writelines(json.dumps([c.__dict__ for c in mockData]))
 jsonFile.close()
-
-    
-
-
