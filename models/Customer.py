@@ -3,4 +3,7 @@ class Customer:
         self.id = number
         self.name = name
         self.adress = adress
+
+    def __iter__(self):
+        return iter([self.id, self.name, self.adress])
         
