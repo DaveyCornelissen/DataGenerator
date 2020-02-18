@@ -3,6 +3,10 @@ import time
 from services.MockService import *
 import os
 import csv
+import itertools
+import threading
+import time
+import sys
 
 dirpath = os.getcwd()
 fileName = ""
@@ -20,8 +24,6 @@ if dataType != 'P' and dataType != 'C':
     print('invalid dataType! exiting...')
     quit()
 
-time.sleep(1)
-
 amount = input('Fill in the amount of mock data row: ')
 
 res = isinstance(amount, int)
@@ -33,8 +35,6 @@ if amount == '':
 if int(amount) < 1:
     print('invalid amount! exiting...')
     quit()
-
-time.sleep(1)
 
 fileName = input(
     'Choose your file name (can leave default)! no need to specify the file type: ')
@@ -48,8 +48,6 @@ if fileName.find('.') != -1:
     index = fileName.index('.')
     if len(fileName) > index :
         fileName = fileName[0: index:] + fileName[len(fileName) + 1::]
-
-time.sleep(1)
 
 print('Choose file type: json / csv')
 
@@ -66,8 +64,6 @@ if fileType.find('.') != -1:
     
 fileName = fileName + '.' + fileType
 
-time.sleep(1)
-
 directory = input('Fill in the file directory (can leave default): ')
 
 fullpath = ''
@@ -77,20 +73,43 @@ if directory != '':
 else:
     fullPath = dirpath + '\\' + fileName
 
-time.sleep(1)
-
 print('Great! Lets start mocking!')
 
-mockData = Generate(dataType, int(amount))
+time.sleep(1)
 
-print("generating done! Total of {o} objects created".format(o=len(mockData)))
+elapsedtime = 0
+done = False
+def animate():
+    global elapsedtime
+    for c in itertools.cycle(['|', '/', '-', '\\']):
+        if done:
+            break
+        sys.stdout.write('\rGenerating mock data! ' + c)
+        sys.stdout.flush()
+        time.sleep(0.1)
+    sys.stdout.write('\rgenerating done! Total of {o} objects created in {t} seconds   '.format(o=len(mockData), t=elapsedtime))
+
+t = threading.Thread(target=animate)
+start = time.time()
+t.start()
+mockData = Generate(dataType, int(amount))
 
 if fileType == 'csv':
     csvFile = open(fullPath, "w")
-    writer = csv.writer(csvFile, lineterminator='\n')
+    model = type(mockData[0])
+    csvHeaders = model.__getattr__
+    print(csvHeaders)
+    writer = csv.DictWriter(csvFile, fieldnames=csvHeaders)
+    
     for cdr in mockData:
-        writer.writerow(list(cdr))
+        nee = vars(cdr)
+        writer.writerow({nee})
+    csvFile.close()
 elif fileType == 'json':
     jsonFile = open(fullPath, "w")
     jsonFile.writelines(json.dumps([c.__dict__ for c in mockData]))
     jsonFile.close()
+
+elapsedtime = time.time() - start
+elapsedtime = str(round(elapsedtime, 2))
+done = True
