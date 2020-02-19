@@ -100,16 +100,15 @@ mockData = Generate(dataType, int(amount))
 
 if fileType == 'csv':
     csvFile = open(fullPath, "w")
-    writer = csv.writer(csvFile)
+    writer = csv.writer(csvFile, lineterminator='\n')
 
     model = type(mockData[0])
     csvHeaders = model.headers
-
-
     writer.writerow(csvHeaders)
 
     for cdr in mockData:
         writer.writerow(list(cdr))
+
     csvFile.close()
 elif fileType == 'json':
     jsonFile = open(fullPath, "w")
