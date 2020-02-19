@@ -1,6 +1,5 @@
 class Producers:
-    headers = [{'id', 'name', 'adress', 'currentOutput'}]
-
+    headers = ['id', 'name', 'adress', 'currentOutput']
 
     def __init__(self, name='', adress='', currentOutput=''):
         self.id = id
@@ -11,6 +10,4 @@ class Producers:
     def __iter__(self):
         return iter([self.id, self.name, self.adress, self.currentOutput])
 
-    def __getattr__(self, attr):
-        return self.headers
            

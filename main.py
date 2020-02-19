@@ -46,7 +46,7 @@ elif fileName == '' and dataType == 'C':
 
 if fileName.find('.') != -1:
     index = fileName.index('.')
-    if len(fileName) > index :
+    if len(fileName) > index:
         fileName = fileName[0: index:] + fileName[len(fileName) + 1::]
 
 print('Choose file type: json / csv')
@@ -61,7 +61,7 @@ if (fileType != 'json' and fileType != 'csv'):
 
 if fileType.find('.') != -1:
     fileType.replace('.', '')
-    
+
 fileName = fileName + '.' + fileType
 
 directory = input('Fill in the file directory (can leave default): ')
@@ -79,6 +79,8 @@ time.sleep(1)
 
 elapsedtime = 0
 done = False
+
+
 def animate():
     global elapsedtime
     for c in itertools.cycle(['|', '/', '-', '\\']):
@@ -87,7 +89,9 @@ def animate():
         sys.stdout.write('\rGenerating mock data! ' + c)
         sys.stdout.flush()
         time.sleep(0.1)
-    sys.stdout.write('\rgenerating done! Total of {o} objects created in {t} seconds   '.format(o=len(mockData), t=elapsedtime))
+    sys.stdout.write('\rgenerating done! Total of {o} objects created in {t} seconds   '.format(
+        o=len(mockData), t=elapsedtime))
+
 
 t = threading.Thread(target=animate)
 start = time.time()
@@ -96,14 +100,16 @@ mockData = Generate(dataType, int(amount))
 
 if fileType == 'csv':
     csvFile = open(fullPath, "w")
+    writer = csv.writer(csvFile)
+
     model = type(mockData[0])
-    csvHeaders = model.__getattr__
-    print(csvHeaders)
-    writer = csv.DictWriter(csvFile, fieldnames=csvHeaders)
-    
+    csvHeaders = model.headers
+
+
+    writer.writerow(csvHeaders)
+
     for cdr in mockData:
-        nee = vars(cdr)
-        writer.writerow({nee})
+        writer.writerow(list(cdr))
     csvFile.close()
 elif fileType == 'json':
     jsonFile = open(fullPath, "w")
