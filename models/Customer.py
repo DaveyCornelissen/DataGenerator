@@ -1,11 +1,20 @@
 class Customer:
-    headers = ['id', 'name', 'adress']
+    Headers = ['id', 'name', 'adress']
+    CustomerId = 0
+    Name = ''
+    Street = ''
+    City = ''
+    Postcode = ''
+    Energy = ''
 
-    def __init__(self, number=0, name='', adress=''):
-        self.id = number
-        self.name = name
-        self.adress = adress
+    def __init__(self, CustomerId=0, Name = '', Street = '', City = '', Postcode = '', Energy = ''):
+        self.CustomerId = CustomerId
+        self.Name = Name
+        self.Street = Street
+        self.City = City
+        self.Postcode = Postcode
+        self.Energy = Energy
 
-    def __iter__(self):
-        return iter([self.id, self.name, self.adress])
+    # def __iter__(self):
+    #     return iter([self.id, self.name, self.adress])
         

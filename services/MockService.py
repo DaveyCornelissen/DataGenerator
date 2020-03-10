@@ -1,9 +1,9 @@
 from faker import Faker
-from models.Customer import Customer
-from models.Producers import Producers
+from models.Customer import *
+from models.Producers import *
+from models.Energy import *
 
 fake = Faker('nl_NL')
-
 
 def Generate(dataType, amount):
     mockData = []
@@ -14,14 +14,14 @@ def Generate(dataType, amount):
             mockData.append(__MockCustomers())
     return mockData
 
-
 def __MockCustomers():
     c = Customer()
-    c.id = fake.random_int(min=0, max=99999999, step=1)
-    c.name = fake.name()
-    c.adress = fake.address()
+    c.CustomerId = fake.random_int(min=0, max=99999999, step=1)
+    c.Name = fake.name()
+    c.Street = fake.street_name()
+    c.City = fake.city()
+    c.Postcode = fake.postcode()
     return c
-
 
 def __MockProducers():
     p = Producers()
@@ -30,3 +30,10 @@ def __MockProducers():
     p.adress = fake.address()
     p.currentOutput = fake.random_int(min=0, max=9999, step=1)
     return p
+
+def __MockEnergy():
+    e = Energy()
+    e.ID = fake.random_int(min=0, max=99999999, step=1)
+    e.KiloWattperHour = fake.random_int(min=0, max=9999, step=5)
+    e.Date = fake.unix_time(end_datetime=None, start_datetime=None)
+    return e
